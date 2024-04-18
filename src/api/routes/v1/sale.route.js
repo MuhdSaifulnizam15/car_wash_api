@@ -13,5 +13,6 @@ router.get('/data/total-sales', auth('getSale'), validate(saleValidation.getTota
 router.get('/chart/:chartType', auth('getSale'), validate(saleValidation.getChartData), saleController.getChartData);
 router.post('/update/:saleId', auth('manageSale'), validate(saleValidation.updateSale), saleController.updateSale);
 router.post('/delete/:saleId', auth('manageSale'), validate(saleValidation.deleteSale), saleController.deleteSale);
+router.get('/report/:type', auth('getSale'), saleController.getSalesReport);
 
 module.exports = router;

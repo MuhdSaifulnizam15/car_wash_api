@@ -11,7 +11,7 @@ const envVarsSchema = Joi.object()
     NODE_ENV: Joi.string()
       .valid("production", "development", "test", "local")
       .required(),
-    PORT: Joi.number().default(3000),
+    PORT: Joi.number().default(3001),
     MONGODB_URL: Joi.string().required().description("Mongo DB url"),
     JWT_SECRET: Joi.string().required().description("JWT secret key"),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
@@ -55,7 +55,7 @@ module.exports = {
       // useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    },
+    }
   },
   jwt: {
     secret: envVars.JWT_SECRET,
@@ -68,7 +68,7 @@ module.exports = {
     smtp: {
       host: envVars.SMTP_HOST,
       port: envVars.SMTP_PORT,
-      secure: false,
+      secure: envVars.NODE_ENV == "local" ? false : true,
       service: envVars.SMTP_SERVICE,
       auth: {
         user: envVars.SMTP_USERNAME,

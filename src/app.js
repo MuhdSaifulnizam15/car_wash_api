@@ -25,6 +25,9 @@ const ApiError = require("./api/utils/ApiError");
 
 const app = express();
 
+// Set the `strictQuery` option to `false` to prepare for the change in Mongoose 7
+mongoose.set('strictQuery', false);
+
 mongoose
   .connect(config.mongoose.url, config.mongoose.options)
   .then(() => {
