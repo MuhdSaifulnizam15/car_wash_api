@@ -3,14 +3,14 @@
   "name": "car_wash_api",
   "builds": [
     {
-      "src": "src/server.js",
+      "src": "/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "src/(.*)",
-      "dest": "src/server.js"
+      "src": "/(.*)",
+      "dest": "/index.js"
     }
   ]
 }
