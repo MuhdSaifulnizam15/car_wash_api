@@ -120,7 +120,7 @@ const createInvoice = (invoice, path, res) => {
       // {
       //   columns: [
       //     {
-      //       image: './src/assets/images/logo.png',
+      //       image: './src/assets/images/logoipsum.png',
       //       width: 45,
       //     },
       //     // {
@@ -150,7 +150,7 @@ const createInvoice = (invoice, path, res) => {
       //   columnGap: 10,
       // },
       {
-        image: './src/assets/images/logo.png',
+        image: './src/assets/images/logoipsum.png',
         width: 45,
       },
       {
@@ -316,7 +316,7 @@ const createInvoice = (invoice, path, res) => {
 const generateHeader = (doc, invoice) => {
   if (invoice?.by_branch) {
     doc
-      .image('./src/assets/logo.png', 50, 45, { width: 30 })
+      .image('./src/assets/logoipsum.png', 50, 45, { width: 30 })
       .fillColor('#444444')
       .fontSize(16)
       .text(invoice.company.name, 90, 50)
@@ -332,7 +332,7 @@ const generateHeader = (doc, invoice) => {
       .moveDown();
   } else {
     doc
-      .image('./src/assets/logo.png', 50, 45, { width: 30 })
+      .image('./src/assets/logoipsum.png', 50, 45, { width: 30 })
       .fillColor('#444444')
       .fontSize(16)
       .text('Rolex Barbershop', 90, 50)

@@ -24,7 +24,9 @@ const queryServices = async (options) => {
 };
 
 const getServiceById = async (id) => {
-  return Service.findById(id);
+  return Service.findById(id).populate({
+    path: "category_id",
+  });;
 };
 
 const getServiceByName = async (name) => {

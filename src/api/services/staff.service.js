@@ -1,8 +1,10 @@
 const httpStatus = require("http-status");
-const { Staff, User } = require("../models");
+const moment = require("moment");
+
+const { Staff, User, Sale } = require("../models");
 const ApiError = require("../utils/ApiError");
 const { getBranchById } = require("./branch.service");
-const { createUser, updateUserById } = require("./user.service");
+const { createUser, updateUserById, deleteUserById } = require("./user.service");
 
 const createStaff = async (userBody) => {
   if (await Staff.isPhoneNumberTaken(userBody.phone_no)) {
@@ -28,12 +30,14 @@ const createStaff = async (userBody) => {
 const queryStaffs = async (options) => {
   // console.log('options', options);
   options.populate = ["branch_id", "user_id"];
-  const staffs = await Staff.paginate(options || {}, options);
+  const staffs = await Staff.paginate({}, options);
   return staffs;
 };
 
 const getStaffById = async (id) => {
-  return Staff.findById(id);
+  return Staff.findById(id).populate([
+    "branch_id", "user_id"
+  ]);
 };
 
 const getStaffByName = async (name) => {
@@ -54,9 +58,10 @@ const updateStaffById = async (staffId, updateBody) => {
   const userBody = {
     first_name: updateBody.first_name,
     last_name: updateBody.last_name,
+    user_id: staff.user_id._id,
   }
   console.log('userBody', userBody, userBody.user_id)
-  await updateUserById(updateBody.user_id, userBody);
+  await updateUserById(userBody.user_id, userBody);
   return staff;
 };
 
@@ -66,6 +71,7 @@ const deleteStaffById = async (staffId) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Staff not found");
   }
   await staff.remove();
+  await deleteUserById(staff.user_id);
   return staff;
 };
 
@@ -77,7 +83,7 @@ const getTotalSaleData = async (filter, options) => {
   const end_date = endDate ? moment(endDate).format() : moment().toDate();
 
   options.populate = ['branch_id', 'user_id'];
-  let staffs = await Staff.paginate(filter || {}, options);
+  let staffs = await Staff.paginate({}, options);
 
   var totalSale = await Promise.all(
     staffs.docs.map(async (staff, index) => {

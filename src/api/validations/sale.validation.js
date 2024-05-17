@@ -14,7 +14,8 @@ const createSales = {
     customer_name: Joi.string(),
     customer_phone_no: Joi.string(),
     total: Joi.string().required(),
-    rewarded_points: Joi.string(),
+    total_redeemed_point: Joi.string(),
+    total_rewarded_point: Joi.string(),
     freebie: Joi.array().items(
       Joi.object({
         name: Joi.string(),

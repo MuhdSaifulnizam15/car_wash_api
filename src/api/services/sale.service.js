@@ -147,12 +147,14 @@ const createSale = async (userBody) => {
 const querySales = async (options) => {
   options.populate = ["branch_id", "barber_id", "customer_id", "order.service"];
   // console.log('options', options)
-  const sales = await Sale.paginate(options || {}, options);
+  const sales = await Sale.paginate({}, options);
   return sales;
 };
 
 const getSaleById = async (id) => {
-  return Sale.findById(id);
+  return Sale.findById(id).populate([
+    "branch_id", "barber_id", "customer_id", "order.service"
+  ]);
 };
 
 const updateSaleById = async (saleId, updateBody) => {
