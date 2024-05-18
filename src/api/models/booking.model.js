@@ -19,6 +19,9 @@ const bookingSchema = mongoose.Schema(
     status: {
       type: String,
     },
+    code: {
+      type: String,
+    },
     branch_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Branch",

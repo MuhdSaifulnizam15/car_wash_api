@@ -88,18 +88,17 @@ const getBookingById = async (id) => {
 };
 
 const updateBookingById = async (bookingId, updateBody) => {
+  let _booking;
   const booking = await getBookingById(bookingId);
   if (!booking) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Booking not found");
   }
-  Object.assign(booking, updateBody);
-  await booking.save();
 
-  if(updateBody.status === 'in-progress') {
+  if(updateBody.status === 'in-progress' && booking.status !== 'in-progress') {
     // send whatsapp to phone number
     const data = JSON.stringify({
       messaging_product: "whatsapp",
-      to: "6" + updateBody.phone_no,
+      to: "6" + booking.phone_no,
       type: "template",
       template: {
         name: "permulaan_cucian_kereta",
@@ -112,7 +111,7 @@ const updateBookingById = async (bookingId, updateBody) => {
             parameters: [
               {
                 type: "text",
-                text: updateBody.car_plate,
+                text: booking.car_plate,
               }
             ],
           },
@@ -138,11 +137,11 @@ const updateBookingById = async (bookingId, updateBody) => {
       .catch(function (error) {
         console.log(error);
       });
-  } else if(updateBody.status === 'ready') {
+  } else if(updateBody.status === 'ready' && booking.status !== 'ready') {
     // send whatsapp to phone number
     const data = JSON.stringify({
       messaging_product: "whatsapp",
-      to: "6" + updateBody.phone_no,
+      to: "6" + booking.phone_no,
       type: "template",
       template: {
         name: "cucian_selesai",
@@ -155,7 +154,7 @@ const updateBookingById = async (bookingId, updateBody) => {
             parameters: [
               {
                 type: "text",
-                text: updateBody.car_plate,
+                text: booking.car_plate,
               }
             ],
           },
@@ -182,6 +181,10 @@ const updateBookingById = async (bookingId, updateBody) => {
         console.log(error);
       });
   }
+
+  Object.assign(booking, updateBody);
+  await booking.save();
+  
   return booking;
 };
 
