@@ -25,9 +25,9 @@ const createBooking = async (body) => {
       to: "6" + _payload.phone_no,
       type: "template",
       template: {
-        name: "statement_available_2",
+        name: "terima_maklumbalas",
         language: {
-          code: "my",
+          code: "ms",
         },
         components: [
           {
@@ -75,7 +75,6 @@ const createBooking = async (body) => {
       });
   }
 
-
   return booking;
 };
 
@@ -95,6 +94,94 @@ const updateBookingById = async (bookingId, updateBody) => {
   }
   Object.assign(booking, updateBody);
   await booking.save();
+
+  if(updateBody.status === 'in-progress') {
+    // send whatsapp to phone number
+    const data = JSON.stringify({
+      messaging_product: "whatsapp",
+      to: "6" + updateBody.phone_no,
+      type: "template",
+      template: {
+        name: "permulaan_cucian_kereta",
+        language: {
+          code: "ms",
+        },
+        components: [
+          {
+            type: "body",
+            parameters: [
+              {
+                type: "text",
+                text: updateBody.car_plate,
+              }
+            ],
+          },
+        ],
+      },
+    });
+
+    const configuration = {
+      method: "post",
+      url: `https://graph.facebook.com/v19.0/${config.meta.sender_phone_id}/messages`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.meta.access_token}`,
+      },
+      data: data,
+    };
+  
+    console.log("data", data);
+    const sendWhatsappMessage = await axios(configuration)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  } else if(updateBody.status === 'ready') {
+    // send whatsapp to phone number
+    const data = JSON.stringify({
+      messaging_product: "whatsapp",
+      to: "6" + updateBody.phone_no,
+      type: "template",
+      template: {
+        name: "cucian_selesai",
+        language: {
+          code: "ms",
+        },
+        components: [
+          {
+            type: "body",
+            parameters: [
+              {
+                type: "text",
+                text: updateBody.car_plate,
+              }
+            ],
+          },
+        ],
+      },
+    });
+
+    const configuration = {
+      method: "post",
+      url: `https://graph.facebook.com/v19.0/${config.meta.sender_phone_id}/messages`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.meta.access_token}`,
+      },
+      data: data,
+    };
+  
+    console.log("data", data);
+    const sendWhatsappMessage = await axios(configuration)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
   return booking;
 };
 
@@ -107,10 +194,74 @@ const deleteBookingById = async (bookingId) => {
   return booking;
 };
 
+const sendLoyaltyPointMessageToWhatsApp = async (payload) => {
+  // send whatsapp to phone number
+  const data = JSON.stringify({
+    messaging_product: "whatsapp",
+    to: "6" + _payload.phone_no,
+    type: "template",
+    template: {
+      name: "program_kesetiaan",
+      language: {
+        code: "ms",
+      },
+      components: [
+        {
+          type: "body",
+          parameters: [
+            {
+              type: "text",
+              text: payload.name,
+            },
+            {
+              type: "text",
+              text: payload.total_spend,
+            },
+            {
+              type: "text",
+              text: payload.total_point_rewarded,
+            },
+            {
+              type: "text",
+              text: payload.date,
+            },
+            {
+              type: "text",
+              text: payload.total_accumulated_point,
+            }
+          ],
+        },
+      ],
+    },
+  });
+
+  const configuration = {
+    method: "post",
+    url: `https://graph.facebook.com/v19.0/${config.meta.sender_phone_id}/messages`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${config.meta.access_token}`,
+    },
+    data: data,
+  };
+
+  console.log("data", data);
+  const sendWhatsappMessage = await axios(configuration)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  return sendWhatsappMessage;
+}
+
 module.exports = {
   createBooking,
   getAllBooking,
   getBookingById,
   updateBookingById,
   deleteBookingById,
+  sendLoyaltyPointMessageToWhatsApp,
 };
