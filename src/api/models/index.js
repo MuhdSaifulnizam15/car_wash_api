@@ -10,4 +10,5 @@ module.exports = {
   Sale: require('./sale.model'),
   Order: require('./order.model'),
   Freebie: require('./freebie.model'),
+  Booking: require('./booking.model'),
 };

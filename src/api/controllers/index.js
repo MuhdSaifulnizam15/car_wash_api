@@ -7,4 +7,5 @@ module.exports = {
   staffController: require('./staff.controller'),
   customerController: require('./customer.controller'),
   saleController: require('./sale.controller'),
+  bookingController: require('./booking.controller'),
 }

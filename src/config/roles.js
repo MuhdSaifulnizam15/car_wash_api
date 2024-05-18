@@ -19,8 +19,10 @@ const getPermissionList = [
   "getCustomers",
   "getSale",
   "getSales",
+  "getBooking",
+  "getBookings",
 ];
-const staffPermissionList = ["manageSale"];
+const staffPermissionList = ["manageSale", "manageBooking"];
 const adminManagePermissionList = [
   "manageUsers",
   "manageCategory",

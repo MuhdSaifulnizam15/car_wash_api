@@ -9,4 +9,5 @@ module.exports = {
   staffService: require('./staff.service'),
   customerService: require('./customer.service'),
   saleService: require('./sale.service'),
+  bookingService: require('./booking.service'),
 };

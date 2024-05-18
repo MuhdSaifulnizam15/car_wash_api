@@ -7,4 +7,5 @@ module.exports = {
   staffValidation: require('./staff.validation'),
   customerValidation: require('./customer.validation'),
   saleValidation: require('./sale.validation'),
+  bookingValidation: require('./booking.validation'),
 };
