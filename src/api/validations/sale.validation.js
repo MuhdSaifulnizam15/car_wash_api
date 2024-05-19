@@ -7,7 +7,7 @@ const createSales = {
     order: Joi.array().items(
       Joi.object({
         service: Joi.string().required(),
-        quantity: Joi.string(),
+        quantity: Joi.number(),
       })
     ),
     customer_id: Joi.string(),
