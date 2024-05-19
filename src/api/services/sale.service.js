@@ -84,9 +84,9 @@ const createSale = async (userBody) => {
     to: "6" + updateCustPointsBodyRes.phone_no,
     type: "template",
     template: {
-      name: "purchase_points_update",
+      name: "program_kesetiaan",
       language: {
-        code: "en_US",
+        code: "ms",
       },
       components: [
         {
