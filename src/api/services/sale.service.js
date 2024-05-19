@@ -50,7 +50,7 @@ const createSale = async (userBody) => {
   }
 
   if (userBody?.total_redeemed_point) {
-    if (userBody?.total_redeemed_point > customer?.total_membership_point)
+    if (parseFloat(userBody?.total_redeemed_point) > parseFloat(customer?.total_membership_point))
       throw new ApiError(
         httpStatus.BAD_REQUEST,
         "Redeemed point more than total points, please try again"
