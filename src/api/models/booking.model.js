@@ -4,10 +4,6 @@ const { toJSON } = require("./plugins");
 
 const bookingSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     phone_no: {
       type: String,
       required: true
@@ -21,6 +17,11 @@ const bookingSchema = mongoose.Schema(
     },
     code: {
       type: String,
+    },
+    customer_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
     },
     branch_id: {
       type: mongoose.Schema.Types.ObjectId,

@@ -4,16 +4,41 @@ const { default: axios } = require("axios");
 const ApiError = require("../utils/ApiError");
 const { generateShortUUID } = require("../utils/uniqueIdGenerator");
 const config = require("../../config/config");
+const { getCustomerById, createCustomer } = require("./customer.service");
 
 const createBooking = async (body) => {
   if (await Booking.isActiveCarPlateOrder(body.car_plate)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "There is an active order for this car plate. Only one order allowed for every car plate. Please contact our administrator for any issue.");
   }
-
-  const _payload = { 
+    
+  let _payload = { 
     ...body, 
     status: body.status ?? 'booked',
     code: generateShortUUID(), 
+  }
+
+  let customer;
+  if (body?.customer_id) {
+    // existing customer
+    customer = await getCustomerById(body.customer_id);
+    if (!customer) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "customer not found.");
+    }
+    _payload.customer_id = customer._id;
+  } else {
+    // add new customer
+    const _body = {
+      name: body?.customer_name,
+      phone_no: body?.phone_no,
+    };
+    customer = await createCustomer(_body);
+    if (!customer) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "error on saving customer data, please try again."
+      );
+    }
+    _payload.customer_id = customer._id;
   }
 
   const booking = await Booking.create(_payload);
