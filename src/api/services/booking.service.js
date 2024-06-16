@@ -112,6 +112,10 @@ const getBookingById = async (id) => {
   return Booking.findById(id);
 };
 
+const getBookingByCarPlate = async (car_plate, phone_no) => {
+  return Booking.findOne({ car_plate, phone_no, status: 'ready' });
+};
+
 const updateBookingById = async (bookingId, updateBody) => {
   let _booking;
   const booking = await getBookingById(bookingId);
@@ -289,6 +293,7 @@ module.exports = {
   createBooking,
   getAllBooking,
   getBookingById,
+  getBookingByCarPlate,
   updateBookingById,
   deleteBookingById,
   sendLoyaltyPointMessageToWhatsApp,
