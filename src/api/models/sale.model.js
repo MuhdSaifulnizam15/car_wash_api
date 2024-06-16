@@ -30,6 +30,9 @@ const salesSchema = mongoose.Schema(
       type: String,
       default: 0
     },
+    car_plate: {
+      type: String
+    },
     freebie: [freebieSchema],
   },
   {

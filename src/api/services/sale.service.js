@@ -11,6 +11,7 @@ const {
   createCustomer,
 } = require("./customer.service");
 const { getStaffById, getTotalSaleData } = require("./staff.service");
+const { getBookingByCarPlate, updateBookingById } = require("./booking.service");
 
 const createSale = async (userBody) => {
   const branch = await getBranchById(userBody.branch_id);
@@ -33,6 +34,7 @@ const createSale = async (userBody) => {
       throw new ApiError(httpStatus.BAD_REQUEST, "customer not found.");
     }
     userBody.customer_id = customer._id;
+    userBody.customer_phone_no = customer.phone_no;
   } else {
     // add new customer
     const body = {
@@ -57,6 +59,16 @@ const createSale = async (userBody) => {
       );
   }
 
+  // Check whether need code for online order pickup
+  const _isCodeRequired = await getBookingByCarPlate(userBody.car_plate, userBody.customer_phone_no)
+  
+  if(_isCodeRequired && _isCodeRequired?.code !== userBody.customer_code) {
+    if(!userBody.customer_code)  
+      throw new ApiError(httpStatus.BAD_REQUEST, `Code security is required`);
+    else
+      throw new ApiError(httpStatus.BAD_REQUEST, `Invalid code. Code sent to this phone_num, ${_isCodeRequired.phone_no}`);
+  }
+
   const sale = await Sale.create(userBody);
 
   // update customer total_redeemed_point and total_spend
@@ -71,14 +83,23 @@ const createSale = async (userBody) => {
     updateCustPointsBody
   );
 
-  console.log(
-    "updateCustPointsBodyRes",
-    updateCustPointsBodyRes.total_membership_point
+  // console.log(
+  //   "updateCustPointsBodyRes",
+  //   updateCustPointsBodyRes.total_membership_point
+  // );
+  // console.log("sale", sale);
+
+  // update booking status
+  const updateCustBookingBody = {
+    status: 'completed'
+  };
+
+  const updateCustBookingBodyRes = await updateBookingById(
+    _isCodeRequired._id,
+    updateCustBookingBody
   );
-  console.log("sale", sale);
 
   // send whatsapp to phone number
-
   const data = JSON.stringify({
     messaging_product: "whatsapp",
     to: "6" + updateCustPointsBodyRes.phone_no,

@@ -12,6 +12,8 @@ const createSales = {
     ),
     customer_id: Joi.string(),
     customer_name: Joi.string(),
+    customer_code: [Joi.string().optional(), Joi.allow(null)],
+    car_plate: [Joi.string().optional(), Joi.allow(null)],
     customer_phone_no: Joi.string(),
     total: Joi.string().required(),
     total_redeemed_point: Joi.number(),
