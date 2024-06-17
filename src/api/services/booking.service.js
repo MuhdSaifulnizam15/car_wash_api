@@ -25,6 +25,7 @@ const createBooking = async (body) => {
       throw new ApiError(httpStatus.BAD_REQUEST, "customer not found.");
     }
     _payload.customer_id = customer._id;
+    _payload.name = customer.name;
   } else {
     // add new customer
     const _body = {
@@ -39,6 +40,7 @@ const createBooking = async (body) => {
       );
     }
     _payload.customer_id = customer._id;
+    _payload.name = customer.name;
   }
 
   const booking = await Booking.create(_payload);
@@ -47,6 +49,7 @@ const createBooking = async (body) => {
     // send whatsapp to phone number
     const data = JSON.stringify({
       messaging_product: "whatsapp",
+      recipient_type: "individual",
       to: "6" + _payload.phone_no,
       type: "template",
       template: {
@@ -73,30 +76,31 @@ const createBooking = async (body) => {
               {
                 type: "text",
                 text: _payload.code,
-              },
-            ],
-          },
-        ],
-      },
+              }
+            ]
+          }
+        ]
+      }
     });
 
     const configuration = {
       method: "post",
+      maxBodyLength: Infinity,
       url: `https://graph.facebook.com/v19.0/${config.meta.sender_phone_id}/messages`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${config.meta.access_token}`,
+        "Authorization": `Bearer ${config.meta.access_token}`,
       },
       data: data,
     };
   
     console.log("data", data);
-    const sendWhatsappMessage = await axios(configuration)
+    const sendWhatsappMessage = await axios.request(configuration)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
       })
       .catch(function (error) {
-        console.log(error);
+        console.log('error', error.message);
       });
   }
 
