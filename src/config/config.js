@@ -31,6 +31,8 @@ const envVarsSchema = Joi.object()
     URL_LOCAL: Joi.string(),
     URL_DEV: Joi.string(),
     URL_PROD: Joi.string(),
+    META_ACCESS_TOKEN: Joi.string(),
+    META_SENDER_PHONE_ID: Joi.string()
   })
   .unknown();
 
