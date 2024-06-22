@@ -89,15 +89,17 @@ const createSale = async (userBody) => {
   // );
   // console.log("sale", sale);
 
-  // update booking status
-  const updateCustBookingBody = {
-    status: 'completed'
-  };
-
-  const updateCustBookingBodyRes = await updateBookingById(
-    _isCodeRequired._id,
-    updateCustBookingBody
-  );
+  if(_isCodeRequired) {
+    // update booking status
+    const updateCustBookingBody = {
+      status: 'completed'
+    };
+  
+    const updateCustBookingBodyRes = await updateBookingById(
+      _isCodeRequired._id,
+      updateCustBookingBody
+    );
+  }
 
   // send whatsapp to phone number
   const data = JSON.stringify({
