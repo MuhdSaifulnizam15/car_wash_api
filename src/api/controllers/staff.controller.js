@@ -1,4 +1,6 @@
 const httpStatus = require('http-status');
+const moment = require('moment');
+
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
@@ -31,7 +33,32 @@ const updateStaff = catchAsync(async (req, res) => {
 const deleteStaff = catchAsync(async (req, res) => {
     await staffService.deleteStaffById(req.params.staffId);
     res.send({ status: true, code: '0000', message: 'Staff successfully deleted'});
-})
+});
+
+const getTotalSaleData = catchAsync(async (req, res) => {
+    const filter = pick(req.query, [
+      'full_name',
+      'phone_no',
+      'branch_id',
+      'user_id',
+      'startDate',
+      'endDate',
+    ]);
+  
+    if (req?.query?.start_date) {
+      filter.createdAt = {
+        $gte: moment(req?.query?.start_date).startOf('day').format(),
+        $lte: req?.query?.end_date
+          ? moment(req?.query?.end_date).endOf('day').format()
+          : moment().endOf('day').format(),
+      };
+    }
+  
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  
+    const result = await staffService.getTotalSaleData(filter, options);
+    res.send({ status: true, code: '0000', result });
+  });
 
 module.exports = {
     createStaff,
@@ -39,4 +66,5 @@ module.exports = {
     getStaffs,
     updateStaff,
     deleteStaff,
+    getTotalSaleData,
 };
