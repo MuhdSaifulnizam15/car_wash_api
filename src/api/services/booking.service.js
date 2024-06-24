@@ -109,6 +109,7 @@ const createBooking = async (body) => {
 
 const getAllBooking = async (options) => {
   options.populate = ["branch_id", "customer_id"];
+  options.sort = { createdAt: -1 };
   const bookings = await Booking.paginate({}, options);
   return bookings;
 };

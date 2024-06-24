@@ -30,6 +30,8 @@ const createStaff = async (userBody) => {
 const queryStaffs = async (options) => {
   // console.log('options', options);
   options.populate = ["branch_id", "user_id"];
+  options.sort = { createdAt: -1 };
+
   const staffs = await Staff.paginate({}, options);
   return staffs;
 };
