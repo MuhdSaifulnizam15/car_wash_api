@@ -11,6 +11,7 @@ const createCustomer = async (userBody) => {
 };
 
 const queryCustomers = async (options) => {
+  options.sort = { createdAt: -1 };
   const customers = await Customer.paginate({}, options);
   return customers;
 };

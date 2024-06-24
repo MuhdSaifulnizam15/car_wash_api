@@ -12,6 +12,8 @@ const createCategory = async (userBody) => {
 };
 
 const queryCategories = async (options) => {
+    options.sort = { createdAt: -1 };
+
     const categories = await Category.paginate({}, options);
     return categories;
 };

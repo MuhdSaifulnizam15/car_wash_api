@@ -169,7 +169,8 @@ const createSale = async (userBody) => {
 
 const querySales = async (options) => {
   options.populate = ["branch_id", "barber_id", "customer_id", "order.service"];
-  // console.log('options', options)
+  options.sort = { createdAt: -1 };
+  
   const sales = await Sale.paginate({}, options);
   return sales;
 };

@@ -18,6 +18,8 @@ const getAllBranch = async (options) => {
   options.populate = {
     path: "address",
   };
+  options.sort = { createdAt: -1 };
+
   const branchs = await Branch.paginate({}, options);
   return branchs;
 };

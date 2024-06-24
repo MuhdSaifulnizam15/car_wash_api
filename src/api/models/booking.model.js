@@ -34,7 +34,7 @@ const bookingSchema = mongoose.Schema(
   }
 );
 
-// bookingSchema.plugin(toJSON);
+bookingSchema.plugin(toJSON);
 bookingSchema.plugin(mongoosePaginate);
 
 bookingSchema.statics.isActiveCarPlateOrder = async function (car_plate, excludeServiceId) {

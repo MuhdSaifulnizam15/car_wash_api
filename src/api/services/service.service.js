@@ -19,6 +19,8 @@ const createService = async (userBody) => {
 
 const queryServices = async (options) => {
   options.populate = ["category_id"];
+  options.sort = { createdAt: -1 };
+
   const services = await Service.paginate({}, options);
   return services;
 };
