@@ -1,9 +1,8 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
 const cors = require("cors");
-const xss = require("xss-clean");
+const xssFilter = require("xss");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
 const httpStatus = require("http-status");
@@ -51,8 +50,24 @@ app.use(express.json());
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));
 
-// sanitize request data
-app.use(xss());
+// sanitize request data against XSS
+const xssMiddleware = (req, res, next) => {
+  const clean = (value) => {
+    if (value && typeof value === "object") {
+      return Object.keys(value).reduce((acc, key) => {
+        acc[key] = clean(value[key]);
+        return acc;
+      }, Array.isArray(value) ? [] : {});
+    }
+    if (typeof value === "string") return xssFilter(value);
+    return value;
+  };
+  if (req.body) req.body = clean(req.body);
+  if (req.query) req.query = clean(req.query);
+  if (req.params) req.params = clean(req.params);
+  next();
+};
+app.use(xssMiddleware);
 app.use(mongoSanitize());
 
 // gzip compression
